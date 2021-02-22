@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MarketBest</title>
+
+    <link rel="stylesheet" type="text/css" href="CSS/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class=contain>
+        <div class=contain-header>
+            <div class=contain-header__logo>Best Market</div>
+            <div class=contain-header__bin>cart</div>
+        </div>
+
+
+
+        <div class=contain-goods>
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+    class Products {
+        data = [];
+        products = [];
+        container = null;
+        totprice = 0;
+        sumarr = 0;
+        price = 0;
+
+        constructor(selector) {
+            this.container = document.querySelector(selector);
+            this._fetchdata();
+            this._render();
+            this.sumPrice();
+        }
+        _fetchdata() {
+            this.data = [{
+                    name: 'BMW',
+                    id: 1,
+                    price: 100
+                },
+                {
+                    name: 'Mercedes-Benz',
+                    id: 2,
+                    price: 110
+                },
+                {
+                    name: 'Porsche',
+                    id: 3,
+                    price: 120
+                },
+                {
+                    name: 'Audi',
+                    id: 4,
+                    price: 90
+                },
+            ];
+        }
+        _render() {
+            for (let data of this.data) {
+                const product = new ProductItem(data);
+                this.products.push(product);
+                this.container.insertAdjacentHTML('beforeend', product.render())
+
+                //ДЗ суммирование цен продуктов
+                this.sumarr += data.price;
+            }
+        }
+        //ДЗ суммирование цен продуктов
+        sumPrice() {
+            this.totprice = this.sumarr;
+            console.log(this.totprice);
+        }
+
+    }
+
+
+    class ProductItem {
+        name = '';
+        id = 0;
+        price = 0;
+        img = '';
+
+        constructor(product, img = 'https://placehold.it/200x150') {
+            ({
+                name: this.name,
+                price: this.price,
+                id: this.id
+            } = product);
+            this.img = img;
+        }
+
+        render() {
+            return `
+            <div class=contain-goods__descr> ${this.name} just for ${this.price}K USD
+                <div class=contain-goods__but id=${this.id-1}> buy!</div>
+            </div>`
+        }
+    }
+
+    const list = new Products('.contain-goods');
+
+    //--------------------------------c a r t--------------------------------
+
+    class Cart {
+        cartitem = {};
+        elem = '';
+        cartdata = [];
+        numProd = 0;
+        totCost = 0;
+        container = null;
+
+        constructor(selector) {
+            this.container = document.querySelector(selector);
+            this.GetCartItem();
+            this.CartDisplay();
+        }
+
+
+        GetCartItem() {
+            list.container.addEventListener('click', elem => {
+                this.cartdata.push(list.products[elem.target.id]);
+
+                console.log(this.cartdata);
+
+                this.numProd = this.cartdata.length;
+                console.log(this.numProd);
+
+                this.totCost += list.products[elem.target.id].price;
+                console.log(this.totCost);
+                this.container.innerHTML = `cart (${this.numProd})`
+            });
+
+        }
+
+        CartDisplay() {
+            this.container.addEventListener('click', checkoutCart => {
+                alert('суммарная стоимость: ' + this.totCost + 'K USD')
+            });
+        }
+
+    }
+
+    const cartcall = new Cart('.contain-header__bin');
+
+</script>
+
+</html>
